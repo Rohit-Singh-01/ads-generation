@@ -634,6 +634,37 @@ class BrandIntelligenceExtractor:
         }
 
 
+def _extract_logos(scraped: Dict) -> Dict:
+    """
+    Safely extract logos from scraped data, handling both dict and list formats.
+    This is a defensive function to handle legacy data structures.
+    """
+    logos = scraped.get('logos', {})
+
+    # Handle legacy format where logos is a list
+    if isinstance(logos, list):
+        return {
+            'light_logo': None,
+            'dark_logo': None,
+            'all_candidates': logos
+        }
+
+    # Handle modern format where logos is a dict
+    if isinstance(logos, dict):
+        return {
+            'light_logo': logos.get('light'),
+            'dark_logo': logos.get('dark'),
+            'all_candidates': logos.get('all', [])
+        }
+
+    # Fallback for unexpected format
+    return {
+        'light_logo': None,
+        'dark_logo': None,
+        'all_candidates': []
+    }
+
+
 def create_brand_data_structure(brand_name: str, scraped: Dict, url: str = "") -> Dict:
     """Create comprehensive brand data structure with all intelligence"""
     text = scraped.get('text', '')
@@ -656,11 +687,7 @@ def create_brand_data_structure(brand_name: str, scraped: Dict, url: str = "") -
             'crawl_method': 'playwright_deep_enhanced',
             'url': url
         },
-        '1_brand_logo': {
-            'light_logo': scraped.get('logos', {}).get('light'),
-            'dark_logo': scraped.get('logos', {}).get('dark'),
-            'all_candidates': scraped.get('logos', {}).get('all', [])
-        },
+        '1_brand_logo': _extract_logos(scraped),
         '2_brand_colours': {
             'colors': scraped.get('colors', []),
             'color_roles': {

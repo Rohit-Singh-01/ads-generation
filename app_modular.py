@@ -17,7 +17,7 @@ from utils import (
     safe_open_image, download_image_from_url, enhance_product_image,
     create_collection_collage, truncate_to_limit, remove_background
 )
-from web_crawler import run_playwright_crawl
+from web_crawler_comprehensive import run_comprehensive_crawl
 from brand_extractor import create_brand_data_structure
 from ai_generator import (
     generate_ad_with_replicate,
@@ -292,7 +292,7 @@ def main():
                     progress_bar = st.progress(0)
 
                     # Run crawler
-                    scraped_data = run_playwright_crawl(
+                    scraped_data = run_comprehensive_crawl(
                         website_url,
                         max_depth,
                         max_pages,

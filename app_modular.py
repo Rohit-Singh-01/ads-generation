@@ -17,7 +17,7 @@ from utils import (
     safe_open_image, download_image_from_url, enhance_product_image,
     create_collection_collage, truncate_to_limit, remove_background
 )
-from web_crawler_comprehensive import run_comprehensive_crawl
+from crawler_fallback import run_crawl_with_fallback
 from brand_extractor import create_brand_data_structure
 from ai_generator import (
     generate_ad_with_replicate,
@@ -291,8 +291,8 @@ def main():
                 with st.spinner("Crawling and analyzing..."):
                     progress_bar = st.progress(0)
 
-                    # Run crawler
-                    scraped_data = run_comprehensive_crawl(
+                    # Run crawler with fallback
+                    scraped_data = run_crawl_with_fallback(
                         website_url,
                         max_depth,
                         max_pages,

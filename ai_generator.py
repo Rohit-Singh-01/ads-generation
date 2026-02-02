@@ -12,10 +12,37 @@ import time
 
 # ========== AI MODELS CONFIGURATION ==========
 AI_MODELS = {
+    # Google Imagen Models
+    "imagen-4": {
+        "name": "Google Imagen 4 (Highest Quality)",
+        "model_id": "google-deepmind/imagen-4",
+        "description": "Google's latest and most advanced text-to-image model"
+    },
+
+    # Seedream Models
+    "seedream-4": {
+        "name": "Seedream 4 (Creative & Artistic)",
+        "model_id": "lucataco/seedream-4",
+        "description": "Advanced creative image generation with artistic flair"
+    },
+
+    # Nano Banana Models (Premium Quality)
+    "nano-banana-pro": {
+        "name": "Nano Banana Pro (Professional)",
+        "model_id": "fofr/nano-banana-pro",
+        "description": "Professional-grade image generation with superior detail"
+    },
+    "nano-banana": {
+        "name": "Nano Banana (Standard)",
+        "model_id": "fofr/nano-banana",
+        "description": "High-quality standard image generation"
+    },
+
+    # FLUX Models (Backup/Alternative)
     "flux-1.1-pro": {
-        "name": "FLUX 1.1 Pro (Fastest, Best Quality)",
+        "name": "FLUX 1.1 Pro (Fast & Quality)",
         "model_id": "black-forest-labs/flux-1.1-pro",
-        "description": "Latest FLUX model with improved speed and quality"
+        "description": "Fast FLUX model with excellent quality"
     },
     "flux-pro": {
         "name": "FLUX Pro (High Quality)",
@@ -68,7 +95,7 @@ def generate_ad_with_replicate(
     prompt: str,
     negative_prompt: str,
     api_key: str,
-    model_key: str = "flux-1.1-pro",
+    model_key: str = "imagen-4",
     aspect_ratio: str = "1:1",
     product_image: Optional[Image.Image] = None,
     logo_image: Optional[Image.Image] = None,
@@ -106,7 +133,7 @@ def generate_ad_with_replicate(
         return None
 
     # Get model configuration
-    model_config = AI_MODELS.get(model_key, AI_MODELS["flux-1.1-pro"])
+    model_config = AI_MODELS.get(model_key, AI_MODELS["imagen-4"])
     model_id = model_config["model_id"]
 
     # Set API key for replicate

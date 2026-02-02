@@ -1,0 +1,13 @@
+{
+  "brand_name": "ceraVe",
+  "size": "1080x1080",
+  "size_name": "Square (1:1)",
+  "style": "Product - Water Splash",
+  "concept": "Hero Product",
+  "prompt": "Professional advertising photograph.\n    \n    STYLE: None - Custom Style\n    \n    POSITIVE ELEMENTS (DO):\n    High quality professional photography, crystal clear details, proper exposure, accurate colors, clean composition\n    \n    High quality, professional, 8K resolution, crystal clear details.\n    ",
+  "negative_prompt": "blurry, out of focus, low quality, poor quality, amateur photography, distorted, deformed, warped, stretched, compressed, squashed, pixelated, artifacts, compression artifacts, noise, heavy grain, overexposed, underexposed, poor lighting, flat lighting, bad composition, watermark, text overlay, logo overlay, copyright mark, signature, cluttered, messy, chaotic, distracting background, busy background, unrealistic, fake looking, CGI, 3D render, cartoon, illustrated, wrong colors, color banding, chromatic aberration, lens dirt",
+  "model": "nano-banana",
+  "aspect_ratio": "1:1",
+  "cache_id": "cerave_square_1:1_20260129_015916",
+  "cached_at": "2026-01-29T01:59:16.956580"
+}

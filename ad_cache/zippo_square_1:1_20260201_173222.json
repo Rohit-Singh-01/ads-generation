@@ -1,0 +1,13 @@
+{
+  "brand_name": "zippo",
+  "size": "1080x1080",
+  "size_name": "Square (1:1)",
+  "style": "Product - Hero Shot",
+  "concept": "Gift Giving",
+  "prompt": "Professional advertising photograph.\n\nSTYLE: None - Custom Style\n\nPOSITIVE ELEMENTS (DO):\nHigh quality professional photography, crystal clear details, proper exposure, accurate colors, clean composition\n\nHigh quality, professional, 8K resolution, crystal clear details.\n",
+  "negative_prompt": "blurry, out of focus, low quality, poor quality, amateur photography, distorted, deformed, warped, stretched, compressed, squashed, pixelated, artifacts, compression artifacts, noise, heavy grain, overexposed, underexposed, poor lighting, flat lighting, bad composition, watermark, text overlay, logo overlay, copyright mark, signature, cluttered, messy, chaotic, distracting background, busy background, unrealistic, fake looking, CGI, 3D render, cartoon, illustrated, wrong colors, color banding, chromatic aberration, lens dirt",
+  "model": "nano-banana",
+  "aspect_ratio": "1:1",
+  "cache_id": "zippo_square_1:1_20260201_173222",
+  "cached_at": "2026-02-01T17:32:22.430538"
+}

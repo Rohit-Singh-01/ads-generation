@@ -1,6 +1,7 @@
 """
 Intelligent Crawler with Fallback Strategy
 Tries Playwright first, falls back to simple HTTP scraper if Playwright fails
+Version: 2.0 - Fixed logos structure
 """
 
 import logging
@@ -8,6 +9,9 @@ from typing import Dict
 import streamlit as st
 
 logger = logging.getLogger(__name__)
+
+# Version check for debugging
+__version__ = "2.0"
 
 def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, progress_bar=None) -> Dict:
     """
@@ -23,6 +27,9 @@ def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, pr
 
         if result.get('success'):
             logger.info("✓ Playwright crawl successful")
+            # IMPORTANT: Ensure logos is always a dict, not a list
+            if isinstance(result.get('logos'), list):
+                result['logos'] = {'light': None, 'dark': None, 'all': result.get('logos', [])}
             return result
         else:
             logger.warning("Playwright crawl returned no success, trying fallback...")

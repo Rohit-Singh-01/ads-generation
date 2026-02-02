@@ -36,40 +36,57 @@ def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, pr
         if 'playwright' in error_msg.lower() or 'browser' in error_msg.lower():
             st.warning("⚠️ Browser automation unavailable. Using lightweight scraper instead...")
 
-        # Fallback to simple URL fetcher
+        # Fallback to enhanced scraper
         try:
             from url_fetcher import fetch_products_from_url
-            logger.info("Falling back to simple HTTP scraper...")
-            st.info("ℹ️ Using lightweight scraper (no browser needed)...")
+            from enhanced_fallback_scraper import enhanced_scrape
+            logger.info("Falling back to enhanced HTTP scraper...")
+            st.info("ℹ️ Using enhanced lightweight scraper (no browser needed)...")
 
             if progress_bar:
-                progress_bar.progress(0.3)
+                progress_bar.progress(0.2)
 
+            # Get brand intelligence
+            brand_intel = enhanced_scrape(website_url)
+
+            if progress_bar:
+                progress_bar.progress(0.4)
+
+            # Get products
             products, error = fetch_products_from_url(website_url)
 
             if progress_bar:
                 progress_bar.progress(0.7)
 
             if products and len(products) > 0:
-                # Convert to format expected by the app
+                # Merge product data with brand intelligence
                 result = {
                     'success': True,
                     'url': website_url,
                     'products': products,
                     'text_content': ' '.join([p['name'] for p in products]),
                     'images': [{'url': p['image_url'], 'alt': p['name']} for p in products],
-                    'colors': [],
-                    'fonts': [],
-                    'logos': [],
-                    'social_links': {},
-                    'contact_info': {},
-                    'nav_structure': [],
+                    'colors': brand_intel.get('colors', []),
+                    'fonts': brand_intel.get('fonts', []),
+                    'logos': brand_intel.get('logos', {
+                        'light': None,
+                        'dark': None,
+                        'all': []
+                    }),
+                    'social_links': brand_intel.get('social_links', {}),
+                    'contact_info': brand_intel.get('contact_info', {}),
+                    'nav_structure': brand_intel.get('nav_structure', []),
                     'reviews_text': '',
-                    'cta_buttons': [],
+                    'cta_buttons': brand_intel.get('cta_buttons', []),
+                    'ctas': brand_intel.get('cta_buttons', []),
+                    'general_forms': [],
+                    'visual_elements': [],
+                    'char_count': sum(len(p['name']) for p in products),
+                    'ads': [],
                     'metadata': {
                         'title': website_url,
                         'description': f"Products from {website_url}",
-                        'method': 'url_fetcher_fallback'
+                        'method': 'enhanced_fallback'
                     },
                     'pages_crawled': 1,
                     'error': None
@@ -78,8 +95,19 @@ def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, pr
                 if progress_bar:
                     progress_bar.progress(1.0)
 
-                logger.info(f"✓ Simple scraper found {len(products)} products")
-                st.success(f"✅ Found {len(products)} products using lightweight scraper!")
+                # Show what was extracted
+                extracted_items = []
+                if products:
+                    extracted_items.append(f"{len(products)} products")
+                if brand_intel.get('colors'):
+                    extracted_items.append(f"{len(brand_intel['colors'])} colors")
+                if brand_intel.get('logos', {}).get('all'):
+                    extracted_items.append(f"{len(brand_intel['logos']['all'])} logos")
+                if brand_intel.get('social_links'):
+                    extracted_items.append(f"{len(brand_intel['social_links'])} social links")
+
+                logger.info(f"✓ Enhanced scraper extracted: {', '.join(extracted_items)}")
+                st.success(f"✅ Extracted: {', '.join(extracted_items)}")
                 return result
             else:
                 error_details = error or "No products found on this page"

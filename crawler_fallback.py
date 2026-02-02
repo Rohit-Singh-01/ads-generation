@@ -40,6 +40,7 @@ def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, pr
         try:
             from url_fetcher import fetch_products_from_url
             logger.info("Falling back to simple HTTP scraper...")
+            st.info("ℹ️ Using lightweight scraper (no browser needed)...")
 
             if progress_bar:
                 progress_bar.progress(0.3)
@@ -49,7 +50,7 @@ def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, pr
             if progress_bar:
                 progress_bar.progress(0.7)
 
-            if products:
+            if products and len(products) > 0:
                 # Convert to format expected by the app
                 result = {
                     'success': True,
@@ -78,19 +79,25 @@ def run_crawl_with_fallback(website_url: str, max_depth: int, max_pages: int, pr
                     progress_bar.progress(1.0)
 
                 logger.info(f"✓ Simple scraper found {len(products)} products")
+                st.success(f"✅ Found {len(products)} products using lightweight scraper!")
                 return result
             else:
-                logger.error(f"Simple scraper failed: {error}")
+                error_details = error or "No products found on this page"
+                logger.error(f"Simple scraper failed: {error_details}")
+                st.error(f"Scraper error: {error_details}")
                 return {
                     'success': False,
-                    'error': error or "Could not extract products from the website",
+                    'error': error_details,
                     'url': website_url
                 }
 
         except Exception as fallback_error:
-            logger.error(f"Fallback scraper also failed: {fallback_error}")
+            import traceback
+            error_trace = traceback.format_exc()
+            logger.error(f"Fallback scraper exception: {fallback_error}\n{error_trace}")
+            st.error(f"Scraper exception: {str(fallback_error)}")
             return {
                 'success': False,
-                'error': f"All crawling methods failed. Last error: {str(fallback_error)}",
+                'error': f"Scraping failed: {str(fallback_error)}. Try a different URL or product page.",
                 'url': website_url
             }

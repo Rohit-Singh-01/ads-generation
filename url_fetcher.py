@@ -49,16 +49,48 @@ def fetch_products_from_url(url: str) -> Tuple[Optional[List[Dict]], Optional[st
     Returns: (products_list, error_message)
     """
     try:
+        # Validate URL
+        if not url or not url.startswith('http'):
+            return None, "Invalid URL. Please provide a full URL starting with http:// or https://"
+
         # Detect platform and route to appropriate scraper
         if '/collections/' in url or 'myshopify.com' in url:
-            return fetch_shopify_products(url)
-        elif 'product-category' in url or '/shop/' in url:
-            return fetch_woocommerce_products(url)
-        else:
-            # Generic scraper for any site
+            products, error = fetch_shopify_products(url)
+            if products:
+                return products, None
+            # Try generic as fallback
             return fetch_generic_ecommerce(url)
+
+        elif 'product-category' in url or '/shop/' in url:
+            products, error = fetch_woocommerce_products(url)
+            if products:
+                return products, None
+            # Try generic as fallback
+            return fetch_generic_ecommerce(url)
+
+        else:
+            # Try all methods for unknown sites
+            # 1. Try generic first
+            products, error = fetch_generic_ecommerce(url)
+            if products:
+                return products, None
+
+            # 2. Try Shopify
+            products, error = fetch_shopify_html(url)
+            if products:
+                return products, None
+
+            # 3. Try WooCommerce
+            products, error = fetch_woocommerce_products(url)
+            if products:
+                return products, None
+
+            return None, "No products found. This page might not be a product listing, or the site structure is not recognized."
+
     except Exception as e:
-        return None, f"Error fetching products: {str(e)}"
+        import traceback
+        error_details = traceback.format_exc()
+        return None, f"Error fetching products: {str(e)}\n{error_details}"
 
 def fetch_shopify_products(url: str) -> Tuple[Optional[List[Dict]], Optional[str]]:
     """Shopify-specific scraper (JSON API + HTML fallback)"""
@@ -384,7 +416,8 @@ def fetch_generic_ecommerce(url: str) -> Tuple[Optional[List[Dict]], Optional[st
         if unique_products:
             return unique_products, None
 
-        return None, "No products found. Try a different URL or use manual upload."
+        return None, "No products found on this page. Please try:\n- A collection/category page instead of homepage\n- A different page on the website\n- Or upload product images manually"
 
     except Exception as e:
-        return None, f"Generic scraper error: {str(e)}"
+        import traceback
+        return None, f"Scraping error: {str(e)}\nDetails: {traceback.format_exc()}"

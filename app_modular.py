@@ -326,7 +326,18 @@ def main():
 
                         st.rerun()
                     else:
-                        st.error("Failed to crawl website")
+                        error_msg = scraped_data.get('error', 'Unknown error occurred')
+                        st.error(f"Failed to crawl website: {error_msg}")
+
+                        # Show helpful suggestions
+                        st.info("""
+                        💡 **Troubleshooting Tips:**
+                        - Make sure the URL is a product collection/category page (not homepage)
+                        - For Shopify: Use URLs like `/collections/all` or `/collections/products`
+                        - For WooCommerce: Use URLs like `/shop/` or `/product-category/...`
+                        - Check if the website blocks automated scraping
+                        - Try a different page on the same website
+                        """)
 
     # ════════════════════════════════════════════════════════════
     # TAB 2: GENERATE ADS
